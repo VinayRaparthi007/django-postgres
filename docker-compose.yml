@@ -4,17 +4,32 @@ services:
   myapp:
     build: .
     container_name: "Demo_app"
-    command: python manage.py runserver 0.0.0.0.8000
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
     - '8001:8000'
+    depends_on:
+      - db_postgres
   db_postgres:
     image: postgres:latest
     ports:
       - '5432:5432'
     restart: unless-stopped
     environment:
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=postgres
     volumes:
       - ~/data:/var/lib/data
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+     - '5080:80'
+    environment:
+     - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
+     - PGADMIN_DEFAULT_PASSWORD=admin
+    depends_on:
+      - db_postgres
+  
+    
+
     
